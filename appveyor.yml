@@ -20,11 +20,12 @@ install:
       flutter config --enable-windows-desktop
 
 build_script:
+  - cd flutter
   - flutter pub get
   - flutter build windows --release
 
 artifacts:
-  - path: build\windows\x64\runner\Release\*.exe
+  - path: flutter\build\windows\x64\runner\Release\*.exe
     name: DYC_DESK
     type: File
 
