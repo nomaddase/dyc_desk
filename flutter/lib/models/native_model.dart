@@ -13,7 +13,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../common.dart';
-import '../generated_bridge.dart';
+// import '../generated_bridge.dart';
+import 'bridge_factory.dart';
 
 final class RgbaFrame extends Struct {
   @Uint32()
@@ -32,7 +33,7 @@ class PlatformFFI {
   // _homeDir is only needed for Android and IOS.
   String _homeDir = '';
   final _eventHandlers = <String, Map<String, HandleEvent>>{};
-  late RustdeskImpl _ffiBind;
+  late dynamic _ffiBind;
   late String _appType;
   StreamEventHandler? _eventCallback;
 
@@ -41,7 +42,7 @@ class PlatformFFI {
   static final PlatformFFI instance = PlatformFFI._();
   final _toAndroidChannel = const MethodChannel('mChannel');
 
-  RustdeskImpl get ffiBind => _ffiBind;
+  dynamic get ffiBind => _ffiBind;
   F3? _session_get_rgba;
 
   static get localeName => Platform.localeName;
@@ -139,7 +140,7 @@ class PlatformFFI {
       } catch (e) {
         debugPrint('Failed to get documents directory: $e');
       }
-      _ffiBind = RustdeskImpl(dylib);
+      _ffiBind = createNativeBridge(dylib);
 
       if (isLinux) {
         if (isMain) {
@@ -239,7 +240,7 @@ class PlatformFFI {
   }
 
   /// Start listening to the Rust core's events and frames.
-  void _startListenEvent(RustdeskImpl rustdeskImpl) {
+  void _startListenEvent(dynamic rustdeskImpl) {
     final appType =
         _appType == kAppTypeDesktopRemote ? '$_appType,$kWindowId' : _appType;
     var sink = rustdeskImpl.startGlobalEventStream(appType: appType);

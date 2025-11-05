@@ -54,7 +54,8 @@ class AudioInput extends StatelessWidget {
 
   static Future<Map<String, Object>> getDevicesInfo(
       bool isCm, bool isVoiceCall) async {
-    List<String> devices = (await bind.mainGetSoundInputs()).toList();
+    // TODO: Rust bridge removed
+    List<String> devices = <String>[];
     if (bind.mainAudioSupportLoopback()) {
       devices.insert(0, translate(_kSystemSound));
     }

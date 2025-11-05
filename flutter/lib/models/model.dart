@@ -46,8 +46,8 @@ import 'input_model.dart';
 import 'platform_model.dart';
 import 'package:flutter_hbb/utils/scale.dart';
 
-import 'package:flutter_hbb/generated_bridge.dart'
-    if (dart.library.html) 'package:flutter_hbb/web/bridge.dart';
+// import 'package:flutter_hbb/generated_bridge.dart'
+//     if (dart.library.html) 'package:flutter_hbb/web/bridge.dart';
 import 'package:flutter_hbb/native/custom_cursor.dart'
     if (dart.library.html) 'package:flutter_hbb/web/custom_cursor.dart';
 
@@ -3464,109 +3464,9 @@ class FFI {
       inputModel.updateTrackpadSpeed();
     }
 
-    // CAUTION: `sessionStart()` and `sessionStartWithDisplays()` are an async functions.
-    // Though the stream is returned immediately, the stream may not be ready.
-    // Any operations that depend on the stream should be carefully handled.
-    late final Stream<EventToUI> stream;
-    if (isNewPeer || display == null || displays == null) {
-      stream = bind.sessionStart(sessionId: sessionId, id: id);
-    } else {
-      // We have to put displays in `sessionStart()` to make sure the stream is ready
-      // and then the displays' capturing requests can be sent.
-      stream = bind.sessionStartWithDisplays(
-          sessionId: sessionId, id: id, displays: Int32List.fromList(displays));
-    }
-
-    if (isWeb) {
-      platformFFI.setRgbaCallback((int display, Uint8List data) {
-        onEvent2UIRgba();
-        imageModel.onRgba(display, data);
-      });
-      this.id = id;
-      return;
-    }
-
-    final cb = ffiModel.startEventListener(sessionId, id);
-
-    imageModel.updateUserTextureRender();
-    final hasGpuTextureRender = bind.mainHasGpuTextureRender();
-    final SimpleWrapper<bool> isToNewWindowNotified = SimpleWrapper(false);
-    // Preserved for the rgba data.
-    stream.listen((message) {
-      if (closed) return;
-      if (tabWindowId != null && !isToNewWindowNotified.value) {
-        // Session is read to be moved to a new window.
-        // Get the cached data and handle the cached data.
-        Future.delayed(Duration.zero, () async {
-          final args = jsonEncode({'id': id, 'close': display == null});
-          final cachedData = await DesktopMultiWindow.invokeMethod(
-              tabWindowId, kWindowEventGetCachedSessionData, args);
-          if (cachedData == null) {
-            // unreachable
-            debugPrint('Unreachable, the cached data is empty.');
-            return;
-          }
-          final data = CachedPeerData.fromString(cachedData);
-          if (data == null) {
-            debugPrint('Unreachable, the cached data cannot be decoded.');
-            return;
-          }
-          ffiModel.setPermissions(data.permissions);
-          await ffiModel.handleCachedPeerData(data, id);
-          await sessionRefreshVideo(sessionId, ffiModel.pi);
-          await bind.sessionRequestNewDisplayInitMsgs(
-              sessionId: sessionId, display: ffiModel.pi.currentDisplay);
-        });
-        isToNewWindowNotified.value = true;
-      }
-      () async {
-        if (message is EventToUI_Event) {
-          if (message.field0 == "close") {
-            closed = true;
-            debugPrint('Exit session event loop');
-            return;
-          }
-
-          Map<String, dynamic>? event;
-          try {
-            event = json.decode(message.field0);
-          } catch (e) {
-            debugPrint('json.decode fail1(): $e, ${message.field0}');
-          }
-          if (event != null) {
-            await cb(event);
-          }
-        } else if (message is EventToUI_Rgba) {
-          final display = message.field0;
-          // Fetch the image buffer from rust codes.
-          final sz = platformFFI.getRgbaSize(sessionId, display);
-          if (sz == 0) {
-            platformFFI.nextRgba(sessionId, display);
-            return;
-          }
-          final rgba = platformFFI.getRgba(sessionId, display, sz);
-          if (rgba != null) {
-            onEvent2UIRgba();
-            await imageModel.onRgba(display, rgba);
-          } else {
-            platformFFI.nextRgba(sessionId, display);
-          }
-        } else if (message is EventToUI_Texture) {
-          final display = message.field0;
-          final gpuTexture = message.field1;
-          debugPrint(
-              "EventToUI_Texture display:$display, gpuTexture:$gpuTexture");
-          if (gpuTexture && !hasGpuTextureRender) {
-            debugPrint('the gpuTexture is not supported.');
-            return;
-          }
-          textureModel.setTextureType(display: display, gpuTexture: gpuTexture);
-          onEvent2UIRgba();
-        }
-      }();
-    });
-    // every instance will bind a stream
+    // TODO: Rust bridge removed
     this.id = id;
+    return;
   }
 
   void onEvent2UIRgba() async {

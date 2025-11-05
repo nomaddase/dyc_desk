@@ -2749,7 +2749,7 @@ class _CountDownButtonState extends State<_CountDownButton> {
 //#region dialogs
 
 void changeSocks5Proxy() async {
-  var socks = await bind.mainGetSocks();
+  var socks = <String>[]; // TODO: Rust bridge removed
 
   String proxy = '';
   String proxyMsg = '';

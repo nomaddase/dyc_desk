@@ -808,11 +808,7 @@ abstract class BasePeerCard extends StatelessWidget {
               bind.mainLoadRecentPeers();
               break;
             case PeerTabIndex.fav:
-              final favs = (await bind.mainGetFav()).toList();
-              if (favs.remove(id)) {
-                await bind.mainStoreFav(favs: favs);
-                bind.mainLoadFavPeers();
-              }
+              // TODO: Rust bridge removed
               break;
             case PeerTabIndex.lan:
               await bind.mainRemoveDiscovered(id: id);
@@ -882,11 +878,7 @@ abstract class BasePeerCard extends StatelessWidget {
       ),
       proc: () {
         () async {
-          final favs = (await bind.mainGetFav()).toList();
-          if (!favs.contains(id)) {
-            favs.add(id);
-            await bind.mainStoreFav(favs: favs);
-          }
+          // TODO: Rust bridge removed
           showToast(translate('Successful'));
         }();
       },
@@ -917,11 +909,8 @@ abstract class BasePeerCard extends StatelessWidget {
       ),
       proc: () {
         () async {
-          final favs = (await bind.mainGetFav()).toList();
-          if (favs.remove(id)) {
-            await bind.mainStoreFav(favs: favs);
-            await reloadFunc();
-          }
+          // TODO: Rust bridge removed
+          await reloadFunc();
           showToast(translate('Successful'));
         }();
       },
@@ -977,7 +966,7 @@ class RecentPeerCard extends BasePeerCard {
       menuItems.add(_terminalRunAsAdminAction(context));
     }
 
-    final List favs = (await bind.mainGetFav()).toList();
+    final List favs = <dynamic>[]; // TODO: Rust bridge removed
 
     if (isDesktop && peer.platform != kPeerPlatformAndroid) {
       menuItems.add(_tcpTunnelingAction(context));
@@ -1102,7 +1091,7 @@ class DiscoveredPeerCard extends BasePeerCard {
       menuItems.add(_terminalRunAsAdminAction(context));
     }
 
-    final List favs = (await bind.mainGetFav()).toList();
+    final List favs = <dynamic>[]; // TODO: Rust bridge removed
 
     if (isDesktop && peer.platform != kPeerPlatformAndroid) {
       menuItems.add(_tcpTunnelingAction(context));

@@ -8,8 +8,6 @@ import 'dart:typed_data';
 
 import 'package:uuid/uuid.dart';
 
-import 'package:flutter_hbb/models/event_to_ui.dart';
-
 class RustdeskImpl {
   RustdeskImpl([DynamicLibrary? dylib]);
 
@@ -53,15 +51,15 @@ class RustdeskImpl {
     return '';
   }
 
-  Stream<EventToUI> sessionStart({required UuidValue sessionId, required String id, dynamic hint}) {
-    return Stream<EventToUI>.empty();
+  Stream<dynamic> sessionStart({required UuidValue sessionId, required String id, dynamic hint}) {
+    return Stream<dynamic>.empty();
   }
 
-  Stream<EventToUI> sessionStartWithDisplays({required UuidValue sessionId,
+  Stream<dynamic> sessionStartWithDisplays({required UuidValue sessionId,
       required String id,
       required Int32List displays,
       dynamic hint}) {
-    return Stream<EventToUI>.empty();
+    return Stream<dynamic>.empty();
   }
 
   Future<bool?> sessionGetRemember({required UuidValue sessionId, dynamic hint}) {
@@ -1206,8 +1204,8 @@ class RustdeskImpl {
     return Future.value();
   }
 
-  Stream<EventToUI> pluginRegisterEventStream({required String id, dynamic hint}) {
-    return Stream<EventToUI>.empty();
+  Stream<dynamic> pluginRegisterEventStream({required String id, dynamic hint}) {
+    return Stream<dynamic>.empty();
   }
 
   String? pluginGetSessionOption({required String id,
