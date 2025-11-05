@@ -32,3 +32,7 @@ artifacts:
 
 cache:
   - C:\flutter
+
+dependencies:
+  flutter_hbb:
+    path: .
