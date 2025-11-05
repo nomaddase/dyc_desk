@@ -1709,7 +1709,7 @@ class _DisplayState extends State<_Display> {
 
   Widget viewStyle(BuildContext context) {
     final isOptFixed = isOptionFixed(kOptionViewStyle);
-    onChanged(String value) async {
+    Future<void> onChanged(String value) async {
       await bind.mainSetUserDefaultOption(key: kOptionViewStyle, value: value);
       setState(() {});
     }
@@ -1731,7 +1731,7 @@ class _DisplayState extends State<_Display> {
 
   Widget scrollStyle(BuildContext context) {
     final isOptFixed = isOptionFixed(kOptionScrollStyle);
-    onChanged(String value) async {
+    Future<void> onChanged(String value) async {
       await bind.mainSetUserDefaultOption(
           key: kOptionScrollStyle, value: value);
       setState(() {});
@@ -1758,7 +1758,7 @@ class _DisplayState extends State<_Display> {
   }
 
   Widget imageQuality(BuildContext context) {
-    onChanged(String value) async {
+    Future<void> onChanged(String value) async {
       await bind.mainSetUserDefaultOption(
           key: kOptionImageQuality, value: value);
       setState(() {});
@@ -1815,7 +1815,7 @@ class _DisplayState extends State<_Display> {
   }
 
   Widget codec(BuildContext context) {
-    onChanged(String value) async {
+    Future<void> onChanged(String value) async {
       await bind.mainSetUserDefaultOption(
           key: kOptionCodecPreference, value: value);
       setState(() {});
@@ -1885,7 +1885,7 @@ class _DisplayState extends State<_Display> {
     }
 
     final key = 'privacy-mode-impl-key';
-    onChanged(String value) async {
+    Future<void> onChanged(String value) async {
       await bind.mainSetOption(key: key, value: value);
       setState(() {});
     }
@@ -1910,7 +1910,7 @@ class _DisplayState extends State<_Display> {
   Widget otherRow(String label, String key) {
     final value = bind.mainGetUserDefaultOption(key: key) == 'Y';
     final isOptFixed = isOptionFixed(key);
-    onChanged(bool b) async {
+    Future<void> onChanged(bool b) async {
       await bind.mainSetUserDefaultOption(
           key: key,
           value: b
@@ -2186,7 +2186,7 @@ class __PrinterState extends State<_Printer> {
   }
 
   Widget incoming(BuildContext context) {
-    onRadioChanged(String value) async {
+    Future<void> onRadioChanged(String value) async {
       await bind.mainSetLocalOption(
           key: kKeyPrinterIncomingJobAction, value: value);
       setState(() {});
