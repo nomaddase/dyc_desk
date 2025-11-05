@@ -380,7 +380,7 @@ class MyTheme {
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       elevation: 15,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
@@ -411,7 +411,7 @@ class MyTheme {
     cardColor: grayBg,
     hintColor: Color(0xFFAAAAAA),
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    tabBarTheme: const TabBarTheme(
+    tabBarTheme: const TabBarThemeData(
       labelColor: Colors.black87,
     ),
     tooltipTheme: tooltipTheme(),
@@ -478,7 +478,7 @@ class MyTheme {
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       elevation: 15,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
@@ -512,7 +512,7 @@ class MyTheme {
     ),
     cardColor: Color(0xFF24252B),
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    tabBarTheme: const TabBarTheme(
+    tabBarTheme: const TabBarThemeData(
       labelColor: Colors.white70,
     ),
     tooltipTheme: tooltipTheme(),
@@ -1706,8 +1706,8 @@ class LastWindowPosition {
     return jsonEncode(toJson());
   }
 
-  static LastWindowPosition? loadFromString(String content) {
-    if (content.isEmpty) {
+  static LastWindowPosition? loadFromString(String? content) {
+    if (content == null || content.isEmpty) {
       return null;
     }
     try {
@@ -2807,20 +2807,23 @@ bool get kUseCompatibleUiMode =>
 bool get isWin10 => windowsBuildNumber.windowsVersion == WindowsTarget.w10;
 
 class ServerConfig {
+  static const _defaultServerHost = 'crm.dyc.kz';
+  static const _defaultKey = 'DHXGkUsRR1dnfYtKHUdToBNpogxUihOpN6dvXn8Wipc=';
+  static const defaultServerHost = _defaultServerHost;
+  static const defaultKey = _defaultKey;
+
   late String idServer;
   late String relayServer;
   late String apiServer;
   late String key;
 
   ServerConfig({String? idServer, String? relayServer, String? apiServer, String? key}) {
-    // дефолты DYC DESK
-    this.idServer    = (idServer?.trim().isNotEmpty ?? false)    ? idServer!.trim()    : 'crm.dyc.kz';
-    this.relayServer = (relayServer?.trim().isNotEmpty ?? false) ? relayServer!.trim() : 'crm.dyc.kz';
-    this.apiServer   = (apiServer?.trim().isNotEmpty ?? false)   ? apiServer!.trim()   : ''; // или 'https://crm.dyc.kz' если реально используешь API
-    this.key         = (key?.trim().isNotEmpty ?? false)         ? key!.trim()         : 'DHXGkUsRR1dnfYtKHUdToBNpogxUihOpN6dvXn8Wipc=';
+    this.idServer = _sanitize(idServer, fallback: _defaultServerHost);
+    this.relayServer =
+        _sanitize(relayServer ?? this.idServer, fallback: _defaultServerHost);
+    this.apiServer = _sanitize(apiServer);
+    this.key = _sanitize(key, fallback: _defaultKey);
   }
-}
-
 
   /// decode from shared string (from user shared or rustdesk-server generated)
   /// also see [encode]
@@ -2835,20 +2838,21 @@ class ServerConfig {
       final bytes = base64Decode(base64.normalize(input));
       json = jsonDecode(utf8.decode(bytes, allowMalformed: true));
     }
-    idServer = json['host'] ?? '';
-    relayServer = json['relay'] ?? '';
-    apiServer = json['api'] ?? '';
-    key = json['key'] ?? '';
+    idServer = _sanitize(json['host'], fallback: _defaultServerHost);
+    relayServer = _sanitize(json['relay'], fallback: _defaultServerHost);
+    apiServer = _sanitize(json['api']);
+    key = _sanitize(json['key'], fallback: _defaultKey);
   }
 
   /// encode to shared string
   /// also see [ServerConfig.decode]
   String encode() {
-    Map<String, String> config = {};
-    config['host'] = idServer.trim();
-    config['relay'] = relayServer.trim();
-    config['api'] = apiServer.trim();
-    config['key'] = key.trim();
+    final config = <String, String>{
+      'host': idServer.trim(),
+      'relay': relayServer.trim(),
+      'api': apiServer.trim(),
+      'key': key.trim(),
+    };
     return base64UrlEncode(Uint8List.fromList(jsonEncode(config).codeUnits))
         .split('')
         .reversed
@@ -2856,11 +2860,19 @@ class ServerConfig {
   }
 
   /// from local options
-  ServerConfig.fromOptions(Map<String, dynamic> options)
-      : idServer = options['custom-rendezvous-server'] ?? "",
-        relayServer = options['relay-server'] ?? "",
-        apiServer = options['api-server'] ?? "",
-        key = options['key'] ?? "";
+  factory ServerConfig.fromOptions(Map<String, dynamic> options) {
+    return ServerConfig(
+      idServer: options['custom-rendezvous-server'],
+      relayServer: options['relay-server'],
+      apiServer: options['api-server'],
+      key: options['key'],
+    );
+  }
+
+  static String _sanitize(Object? value, {String fallback = ''}) {
+    final text = (value is String ? value : value?.toString())?.trim() ?? '';
+    return text.isEmpty ? fallback : text;
+  }
 }
 
 Widget dialogButton(String text,
