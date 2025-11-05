@@ -14,9 +14,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # Локальный пакет flutter_hbb (указывает, что корень проекта = пакет)
-  flutter_hbb:
-    path: .
 
   ffi: ^2.1.0
   path_provider: ^2.1.1
