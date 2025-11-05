@@ -50,7 +50,6 @@ dependencies:
   image_picker: ^1.1.2
   image: ^4.0.17
   back_button_interceptor: ^6.0.1
-  flutter_rust_bridge: "1.80.1"
   window_manager:
     git:
       url: https://github.com/rustdesk-org/window_manager
@@ -126,7 +125,7 @@ dependency_overrides:
 
 # rerun: flutter pub run flutter_launcher_icons
 flutter_icons:
-  image_path: "../res/icon.png"
+  image_path: "assets/icon.svg"
   remove_alpha_ios: true
   android: true
   ios: true
