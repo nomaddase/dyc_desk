@@ -1357,9 +1357,9 @@ showSetOSPassword(
   var autoLogin =
       await bind.sessionGetOption(sessionId: sessionId, arg: 'auto-login') !=
           '';
-  controller.text = osPassword;
+  controller.text = osPassword ?? '';
   dialogManager.show((setState, close, context) {
-    closeWithCallback([dynamic]) {
+    void closeWithCallback([dynamic _]) {
       close();
       if (closeCallback != null) closeCallback();
     }

@@ -189,13 +189,25 @@ List<Widget> ServerConfigImportExportWidgets(
   }
 
   export() {
-    final text = ServerConfig(
-if (controllers[0].text.isEmpty) controllers[0].text = 'crm.dyc.kz';  // ID server
-if (controllers[1].text.isEmpty) controllers[1].text = 'crm.dyc.kz';  // Relay server
-if (controllers[2].text.isEmpty) controllers[2].text = '';            // API server
-if (controllers[3].text.isEmpty) controllers[3].text = 'DHXGkUsRR1dnfYtKHUdToBNpogxUihOpN6dvXn8Wipc='; // Key
+    void ensureDefaults() {
+      if (controllers[0].text.trim().isEmpty) {
+        controllers[0].text = ServerConfig.defaultServerHost;
+      }
+      if (controllers[1].text.trim().isEmpty) {
+        controllers[1].text = ServerConfig.defaultServerHost;
+      }
+      if (controllers[3].text.trim().isEmpty) {
+        controllers[3].text = ServerConfig.defaultKey;
+      }
+    }
 
-        .encode();
+    ensureDefaults();
+    final text = ServerConfig(
+      idServer: controllers[0].text,
+      relayServer: controllers[1].text,
+      apiServer: controllers[2].text,
+      key: controllers[3].text,
+    ).encode();
     debugPrint("ServerConfig export: $text");
     Clipboard.setData(ClipboardData(text: text));
     showToast(translate('Export server configuration successfully'));
