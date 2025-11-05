@@ -401,12 +401,7 @@ class _PeerTabPageState extends State<PeerTabPage>
                 bind.mainLoadRecentPeers();
                 break;
               case 1:
-                final favs = (await bind.mainGetFav()).toList();
-                peers.map((p) {
-                  favs.remove(p.id);
-                }).toList();
-                await bind.mainStoreFav(favs: favs);
-                bind.mainLoadFavPeers();
+                // TODO: Rust bridge removed
                 break;
               case 2:
                 for (var p in peers) {
@@ -439,13 +434,7 @@ class _PeerTabPageState extends State<PeerTabPage>
         toolTip: translate('Add to Favorites'),
         onTap: () async {
           final peers = model.selectedPeers;
-          final favs = (await bind.mainGetFav()).toList();
-          for (var p in peers) {
-            if (!favs.contains(p.id)) {
-              favs.add(p.id);
-            }
-          }
-          await bind.mainStoreFav(favs: favs);
+          // TODO: Rust bridge removed
           model.setMultiSelectionMode(false);
           showToast(translate('Successful'));
         },

@@ -7,8 +7,6 @@ import 'package:uuid/uuid.dart';
 import 'dart:html' as html;
 
 import 'package:flutter_hbb/consts.dart';
-import 'package:flutter_hbb/models/event_to_ui.dart';
-
 class RustdeskImpl {
   Future<void> stopGlobalEventStream({required String appType, dynamic hint}) {
     throw UnimplementedError("stopGlobalEventStream");
@@ -60,16 +58,16 @@ class RustdeskImpl {
     ]);
   }
 
-  Stream<EventToUI> sessionStart(
+  Stream<dynamic> sessionStart(
       {required UuidValue sessionId, required String id, dynamic hint}) {
     js.context.callMethod('setByName', [
       'session_start',
       jsonEncode({'id': id})
     ]);
-    return Stream.empty();
+    return Stream<dynamic>.empty();
   }
 
-  Stream<EventToUI> sessionStartWithDisplays(
+  Stream<dynamic> sessionStartWithDisplays(
       {required UuidValue sessionId,
       required String id,
       required Int32List displays,
@@ -1607,7 +1605,7 @@ class RustdeskImpl {
     throw UnimplementedError("pluginEvent");
   }
 
-  Stream<EventToUI> pluginRegisterEventStream(
+  Stream<dynamic> pluginRegisterEventStream(
       {required String id, dynamic hint}) {
     throw UnimplementedError("pluginRegisterEventStream");
   }
