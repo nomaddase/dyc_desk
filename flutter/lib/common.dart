@@ -2814,25 +2814,11 @@ class ServerConfig {
 
   ServerConfig(
       {String? idServer, String? relayServer, String? apiServer, String? key}) {
-    // Значения по умолчанию для твоего сервера
-    this.idServer = (idServer?.trim().isNotEmpty ?? false)
-        ? idServer!.trim()
-        : 'crm.dyc.kz';
-
-    this.relayServer = (relayServer?.trim().isNotEmpty ?? false)
-        ? relayServer!.trim()
-        : 'crm.dyc.kz';
-
-    this.apiServer = (apiServer?.trim().isNotEmpty ?? false)
-        ? apiServer!.trim()
-        : 'https://crm.dyc.kz';
-
-    this.key = (key?.trim().isNotEmpty ?? false)
-        ? key!.trim()
-        : 'DHXGkUsRR1dnfYtKHUdToBNpogxUihOpN6dvXn8Wipc';
+    this.idServer = idServer?.trim() ?? '';
+    this.relayServer = relayServer?.trim() ?? '';
+    this.apiServer = apiServer?.trim() ?? '';
+    this.key = key?.trim() ?? '';
   }
-}
-
 
   /// decode from shared string (from user shared or rustdesk-server generated)
   /// also see [encode]
