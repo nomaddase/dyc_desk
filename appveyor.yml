@@ -1,0 +1,37 @@
+version: 1.0.{build}
+
+image: Visual Studio 2022
+
+environment:
+  FLUTTER_HOME: C:\flutter
+
+init:
+  - git config --global core.autocrlf input
+
+install:
+  # === Install Flutter SDK ===
+  - ps: |
+      if (!(Test-Path $env:FLUTTER_HOME)) {
+        git clone https://github.com/flutter/flutter.git -b stable $env:FLUTTER_HOME
+      }
+      $env:Path += ";$env:FLUTTER_HOME\bin"
+      flutter doctor
+      flutter config --enable-windows-desktop
+
+build_script:
+  - cd flutter
+  - flutter pub get
+  - flutter build windows --release
+
+artifacts:
+  - path: flutter\build\windows\x64\runner\Release\*.exe
+    name: DYC_DESK
+    type: File
+
+cache:
+  - C:\flutter
+
+only_commits:
+  files:
+    - flutter/
+

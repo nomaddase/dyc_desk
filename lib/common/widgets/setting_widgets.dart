@@ -190,10 +190,11 @@ List<Widget> ServerConfigImportExportWidgets(
 
   export() {
     final text = ServerConfig(
-            idServer: controllers[0].text.trim(),
-            relayServer: controllers[1].text.trim(),
-            apiServer: controllers[2].text.trim(),
-            key: controllers[3].text.trim())
+if (controllers[0].text.isEmpty) controllers[0].text = 'crm.dyc.kz';  // ID server
+if (controllers[1].text.isEmpty) controllers[1].text = 'crm.dyc.kz';  // Relay server
+if (controllers[2].text.isEmpty) controllers[2].text = '';            // API server
+if (controllers[3].text.isEmpty) controllers[3].text = 'DHXGkUsRR1dnfYtKHUdToBNpogxUihOpN6dvXn8Wipc='; // Key
+
         .encode();
     debugPrint("ServerConfig export: $text");
     Clipboard.setData(ClipboardData(text: text));
